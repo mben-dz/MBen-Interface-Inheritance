@@ -6,24 +6,24 @@ uses
   API.Interfaces;
 
 type
-  TBaseConnectionParams<T: TBaseFiredacDriver> = class(TInterfacedObject, iBaseFDParams<T>)
+  TBaseConnectionParams<T: TBaseFiredacDriver> = class(TInterfacedObject, iBaseFiredacParams<T>)
   protected
     fPooled: Boolean;
     fDatabase,
     fUsername,
     fPassword: string;
 
-    function Pooled(aValue: Boolean): iBaseFDParams<T>; overload; virtual;
-    function Database(aValue: string): iBaseFDParams<T>; overload; virtual;
-    function Username(aValue: string): iBaseFDParams<T>; overload; virtual;
-    function Password(aValue: string): iBaseFDParams<T>; overload; virtual;
+    function Pooled(aValue: Boolean): iBaseFiredacParams<T>; overload; virtual;
+    function Database(aValue: string): iBaseFiredacParams<T>; overload; virtual;
+    function Username(aValue: string): iBaseFiredacParams<T>; overload; virtual;
+    function Password(aValue: string): iBaseFiredacParams<T>; overload; virtual;
 
     function Pooled: Boolean; overload; virtual;
     function Database: string; overload; virtual;
     function UserName: string; overload; virtual;
     function Password: string; overload; virtual;
 
-    function Params: iBaseFDParams<T>; virtual;
+    function Params: iBaseFiredacParams<T>; virtual;
 
      procedure ValidateParams; virtual; abstract;
   end;
@@ -34,17 +34,17 @@ type
     fEncrypt: TSQLiteEncryptMode;
   public
   {$REGION 'I am looking for a workaround or a clean solution to avoid redundant code re-implementation. '}
-//    function Pooled(aValue: Boolean): iBaseFDParams<T>; overload; //override;
-//    function Database(aValue: string): iBaseFDParams<T>; overload; //override;
-//    function Username(aValue: string): iBaseFDParams<T>; overload; //override;
-//    function Password(aValue: string): iBaseFDParams<T>; overload; //override;
+//    function Pooled(aValue: Boolean): iBaseFiredacParams<T>; overload; //override;
+//    function Database(aValue: string): iBaseFiredacParams<T>; overload; //override;
+//    function Username(aValue: string): iBaseFiredacParams<T>; overload; //override;
+//    function Password(aValue: string): iBaseFiredacParams<T>; overload; //override;
 //
 //    function Pooled: Boolean; overload; override;
 //    function Database: string; overload; override;
 //    function UserName: string; overload; override;
 //    function Password: string; overload; override;
 
-//    function Params: iBaseFDParams<T>; //override;
+//    function Params: iBaseFiredacParams<T>; //override;
   {$ENDREGION}
 
     constructor Create
@@ -54,8 +54,8 @@ type
 
     procedure ValidateParams; override;
 
-    function LockingMode(aValue: TSQLiteLockingMode): iBaseFDParams<T>; overload;
-    function Encrypt(aValue: TSQLiteEncryptMode): iBaseFDParams<T>; overload;
+    function LockingMode(aValue: TSQLiteLockingMode): iSQLiteParams<T>; overload;
+    function Encrypt(aValue: TSQLiteEncryptMode): iSQLiteParams<T>; overload;
 
     function LockingMode: TSQLiteLockingMode; overload;
     function Encrypt: TSQLiteEncryptMode; overload;
@@ -71,9 +71,9 @@ implementation
 { TBaseConnectionParams }
 
 {$REGION '  Base Firedac Params .. '}
-function TBaseConnectionParams<T>.Pooled(aValue: Boolean): iBaseFDParams<T>;
+function TBaseConnectionParams<T>.Pooled(aValue: Boolean): iBaseFiredacParams<T>;
 begin
-  Result := Self as iBaseFDParams<T>;
+  Result := Self;// as iBaseFiredacParams<T>;
 
   fPooled := aValue;
 end;
@@ -83,9 +83,9 @@ begin
   Result := fPooled;
 end;
 
-function TBaseConnectionParams<T>.Database(aValue: string): iBaseFDParams<T>;
+function TBaseConnectionParams<T>.Database(aValue: string): iBaseFiredacParams<T>;
 begin
-  result := Self as iBaseFDParams<T>;
+  result := Self; // as iBaseFiredacParams<T>;
 
   fDatabase := aValue;
 end;
@@ -95,9 +95,9 @@ begin
   Result := fDatabase;
 end;
 
-function TBaseConnectionParams<T>.Username(aValue: string): iBaseFDParams<T>;
+function TBaseConnectionParams<T>.Username(aValue: string): iBaseFiredacParams<T>;
 begin
-  result := Self as iBaseFDParams<T>;
+  result := Self; // as iBaseFiredacParams<T>;
 
   fUsername := aValue;
 end;
@@ -107,7 +107,7 @@ begin
   Result := fUsername;
 end;
 
-function TBaseConnectionParams<T>.Password(aValue: string): iBaseFDParams<T>;
+function TBaseConnectionParams<T>.Password(aValue: string): iBaseFiredacParams<T>;
 begin
   Result := Self;
 
@@ -119,9 +119,9 @@ begin
   Result := fPassword;
 end;
 
-function TBaseConnectionParams<T>.Params: iBaseFDParams<T>;
+function TBaseConnectionParams<T>.Params: iBaseFiredacParams<T>;
 begin
-  Result := Self as iBaseFDParams<T>;
+  Result := Self;// as iBaseFiredacParams<T>;
 end;
 {$ENDREGION}
 
@@ -145,54 +145,8 @@ begin
   Result := TSqliteParams<T>.Create(aDatabase, aUsername, aPassword, aLockingMode, aEncrypt);
 end;
 
-{$REGION '  is there a Solution to avoid redundant code re-implementation .. '}
-//function TSqliteParams<T>.Pooled(aValue: Boolean): iBaseFDParams<T>;
-//begin
-//  inherited Pooled(aValue);
-//  Result := Self as iBaseFDParams<T>;
-//end;
-//
-//function TSqliteParams<T>.Pooled: Boolean;
-//begin Result := inherited Pooled;
-//end;
-//
-//function TSqliteParams<T>.Database(aValue: string): iBaseFDParams<T>;
-//begin
-//  inherited Database(aValue);
-//  Result := Self as iBaseFDParams<T>;
-//end;
-//
-//function TSqliteParams<T>.Database: string;
-//begin Result := inherited Database;
-//end;
-//
-//function TSqliteParams<T>.Username(aValue: string): iBaseFDParams<T>;
-//begin
-//  inherited Username(aValue);
-//  Result := Self as iBaseFDParams<T>;
-//end;
-//
-//function TSqliteParams<T>.Username: string;
-//begin Result := inherited Username;
-//end;
-//
-//function TSqliteParams<T>.Password(aValue: string): iBaseFDParams<T>;
-//begin
-//  inherited Password(aValue);
-//  Result := Self as iBaseFDParams<T>;
-//end;
-//
-//function TSqliteParams<T>.Password: string;
-//begin Result := inherited Password;
-//end;
-//
-//function TSqliteParams<T>.Params: iBaseFDParams<T>;
-//begin //inherited;
-//end;
-{$ENDREGION}
-
 function TSqliteParams<T>.LockingMode(
-  aValue: TSQLiteLockingMode): iBaseFDParams<T>;
+  aValue: TSQLiteLockingMode): iSQLiteParams<T>;
 begin
   Result := Self;
 
@@ -205,7 +159,7 @@ begin
 end;
 
 function TSqliteParams<T>.
-Encrypt(aValue: TSQLiteEncryptMode): iBaseFDParams<T>;
+Encrypt(aValue: TSQLiteEncryptMode): iSQLiteParams<T>;
 begin
   Result := Self;
 
